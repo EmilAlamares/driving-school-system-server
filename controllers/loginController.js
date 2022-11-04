@@ -1,4 +1,4 @@
-// const User = require("../models/userModel")
+const User = require("../models/userModel")
 const jwt = require("jsonwebtoken")
 const bcrypt = require("bcrypt")
 const asyncHandler = require("express-async-handler")
@@ -19,43 +19,43 @@ const asyncHandler = require("express-async-handler")
 //   res.json({ user })
 // })
 
-// const createUser = asyncHandler(async (req, res) => {
-//   let token
-//   const { username, password, passwordConfirm } = req.body
+const createUser = asyncHandler(async (req, res) => {
+  let token
+  const { email, password, passwordConfirm} = req.body
 
-//   if (!username || !password || !passwordConfirm) {
-//     res.json({ message: "Please input all fields." })
-//   }
+  if (!email || !password) {
+    res.json({ message: "Please input all fields." })
+  }
 
-//   const userExists = await User.findOne({ username })
+  const userExists = await User.findOne({ email })
 
-//   if (userExists) {
-//     res.json({ message: "Username already taken." })
-//   }
+  if (userExists) {
+   return res.json({ message: "E-mail already taken." })
+  }
 
-//   if (password !== passwordConfirm) {
-//     res.json({ message: "Passwords don't match." })
-//   }
+  if (password !== passwordConfirm) {
+    return res.json({ message: "Passwords don't match." })
+  }
 
-//   salt = await bcrypt.genSalt(10)
-//   hashedPassword = await bcrypt.hash(password, salt)
+  salt = await bcrypt.genSalt(10)
+  hashedPassword = await bcrypt.hash(password, salt)
 
-//   const user = await User.create({
-//     username,
-//     password: hashedPassword,
-//   })
+  const user = await User.create({
+    email,
+    password: hashedPassword,
+  })
 
-//   if (user) {
-//     res.json({
-//       message: "Success",
-//       id: user._id,
-//       username,
-//       token: generateToken(user._id),
-//     })
-//   } else {
-//     res.json({ message: "Invalid Credentials." })
-//   }
-// })
+  if (user) {
+   return res.json({
+      message: "Success",
+      id: user._id,
+      email,
+      token: generateToken(user._id),
+    })
+  } else {
+   return res.json({ message: "Invalid Credentials." })
+  }
+})
 
 // const updateUser = asyncHandler(async (req, res) => {
 //   res.send("Update user")
@@ -67,27 +67,24 @@ const asyncHandler = require("express-async-handler")
 
 const loginUser = asyncHandler(async (req, res) => {
     data = req.body
-//   const { username, password } = req.body
+  const { email, password } = req.body
 
-//   if (!username || !password) {
-//     res.json({ message: "Please input all fields." })
-//   }
+  if (!email || !password) {
+    return res.json({ message: "Please input all fields." })
+  }
 
-//   const user = await User.findOne({ username })
+  const user = await User.findOne({ email })
 
-//   if (user && (await bcrypt.compare(password, user.password))) {
-//     res.json({
-//       message: "Success",
-//       id: user._id,
-//       username: user.username,
-//       token: generateToken(user._id),
-//     })
-//   } else {
-//     res.json({ message: "Invalid credentials." })
-//   }
-
-    res.send(data)
-    // res.json({message: 'Logged in.'})
+  if (user && (await bcrypt.compare(password, user.password))) {
+    res.json({
+      message: "Success",
+      id: user._id,
+      email: user.email,
+      token: generateToken(user._id),
+    })
+  } else {
+    return res.json({ message: "Invalid credentials." })
+  }
 })
 
 const generateToken = (id) => {
@@ -95,10 +92,10 @@ const generateToken = (id) => {
 }
 
 module.exports = {
-//   getUser,
-//   searchUser,
-//   updateUser,
-//   createUser,
-//   deleteUser,
+  // getUser,
+  // searchUser,
+  // updateUser,
+  // deleteUser,
+  createUser,
   loginUser,
 }
