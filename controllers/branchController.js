@@ -15,7 +15,7 @@ const createBranch = asyncHandler(async (req, res) => {
 const getBranchUsers = asyncHandler(async (req, res) => {
   const { branch, type } = req.params
 
-  const response = await User.find({ branches: branch, type}, {firstName: 1})
+  const response = await User.find({ branches: branch, type})
   res.json(response)
 })
 

@@ -35,6 +35,7 @@ const createUser = asyncHandler(async (req, res) => {
     contactNo,
     branches,
     package,
+    instructorId
   } = req.body
 
   if (!email || !password) {
@@ -66,7 +67,8 @@ const createUser = asyncHandler(async (req, res) => {
     birthDate,
     contactNo,
     branches,
-    package
+    package,
+    instructorId
   })
 
   if (user) {
