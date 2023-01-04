@@ -15,13 +15,26 @@ const asyncHandler = require("express-async-handler")
 
 //   let user = await User.aggregate([{$lookup: {from: 'conversations', localField: 'username', foreignField: 'usersName', as: 'conversation'}}, {$match: {username: usernameRegex}}])
 //   user = user.filter(user => user.username !== req.user.username)
-  
+
 //   res.json({ user })
 // })
 
 const createUser = asyncHandler(async (req, res) => {
   let token
-  const { email, password, passwordConfirm} = req.body
+  const {
+    email,
+    password,
+    passwordConfirm,
+    firstName,
+    middleName,
+    lastName,
+    address,
+    type,
+    gender,
+    birthDate,
+    contactNo,
+    branches,
+  } = req.body
 
   if (!email || !password) {
     res.json({ message: "Please input all fields." })
@@ -30,7 +43,7 @@ const createUser = asyncHandler(async (req, res) => {
   const userExists = await User.findOne({ email })
 
   if (userExists) {
-   return res.json({ message: "E-mail already taken." })
+    return res.json({ message: "E-mail already taken." })
   }
 
   if (password !== passwordConfirm) {
@@ -43,17 +56,26 @@ const createUser = asyncHandler(async (req, res) => {
   const user = await User.create({
     email,
     password: hashedPassword,
+    firstName,
+    middleName,
+    lastName,
+    address,
+    type,
+    gender,
+    birthDate,
+    contactNo,
+    branches,
   })
 
   if (user) {
-   return res.json({
+    return res.json({
       message: "Success",
       id: user._id,
       email,
       token: generateToken(user._id),
     })
   } else {
-   return res.json({ message: "Invalid Credentials." })
+    return res.json({ message: "Invalid Credentials." })
   }
 })
 
@@ -66,7 +88,7 @@ const createUser = asyncHandler(async (req, res) => {
 // })
 
 const loginUser = asyncHandler(async (req, res) => {
-    data = req.body
+  data = req.body
   const { email, password } = req.body
 
   if (!email || !password) {

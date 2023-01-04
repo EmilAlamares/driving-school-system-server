@@ -1,6 +1,6 @@
 const express = require("express")
 const cors = require("cors")
-const loginRoutes = require("./routes/loginRoutes")
+const userRoutes = require("./routes/userRoutes")
 require("dotenv").config()
 const { connectDatabase } = require("./config/database")
 const app = express()
@@ -15,7 +15,7 @@ app.use(cors())
 
 app.use(upload())
 
-app.use("/login", loginRoutes)
+app.use("/users", userRoutes)
 // app.use("/conversations", conversationRoutes)
 // app.use("/messages", messageRoutes)
 // app.use("/home", homeRoutes)
