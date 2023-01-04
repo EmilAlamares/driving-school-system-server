@@ -1,3 +1,4 @@
+const { ObjectId } = require("mongodb")
 const mongoose = require("mongoose")
 
 const userSchema = mongoose.Schema({
@@ -45,6 +46,12 @@ const userSchema = mongoose.Schema({
     type: String,
     required: [true, "Please add a type."],
   },
+  package: {
+    type: String,
+  },
+  instructorId: {
+    type: ObjectId
+  }
 }, {timestamps: true})
 
 module.exports = mongoose.model('User', userSchema)
