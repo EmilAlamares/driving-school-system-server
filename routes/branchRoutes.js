@@ -1,9 +1,10 @@
 const express = require("express")
-const { createBranch, getBranchUsers } = require("../controllers/branchController")
+const { createBranch, getBranchUsers, getBranch } = require("../controllers/branchController")
 const router = express.Router()
 
-router.route("/").post(createBranch)
-//     .get(getUser)
+router.route("/")
+        .post(createBranch)
+        .get(getBranch)
 //     .put(updateUser)
 //     .delete(deleteUser)
 

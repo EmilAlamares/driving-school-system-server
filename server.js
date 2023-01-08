@@ -18,10 +18,7 @@ app.use(upload())
 
 app.use("/users", userRoutes)
 app.use("/branches", branchRoutes)
-// app.use("/conversations", conversationRoutes)
-// app.use("/messages", messageRoutes)
-// app.use("/home", homeRoutes)
-// app.use('/image', imageRoutes)
+
 
 const server = require("http").createServer(app)
 

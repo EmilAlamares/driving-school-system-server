@@ -10,14 +10,11 @@ const asyncHandler = require("express-async-handler")
 //   res.json({ user })
 // })
 
-// const searchUser = asyncHandler(async (req, res) => {
-//   const usernameRegex = new RegExp(`^${req.params.username}`, "i")
+const searchUser = asyncHandler(async (req, res) => {
 
-//   let user = await User.aggregate([{$lookup: {from: 'conversations', localField: 'username', foreignField: 'usersName', as: 'conversation'}}, {$match: {username: usernameRegex}}])
-//   user = user.filter(user => user.username !== req.user.username)
 
-//   res.json({ user })
-// })
+  res.json({ user })
+})
 
 const createUser = asyncHandler(async (req, res) => {
   let token
@@ -101,12 +98,17 @@ const loginUser = asyncHandler(async (req, res) => {
 
   const user = await User.findOne({ email })
 
+  // console.log(user)
+
   if (user && (await bcrypt.compare(password, user.password))) {
     res.json({
       message: "Success",
       id: user._id,
       email: user.email,
       token: generateToken(user._id),
+      type: user.type,
+      firstName: user.firstName,
+      lastName: user.lastName
     })
   } else {
     return res.json({ message: "Invalid credentials." })
