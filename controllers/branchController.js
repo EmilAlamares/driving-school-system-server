@@ -3,12 +3,14 @@ const User = require("../models/userModel")
 const asyncHandler = require("express-async-handler")
 
 const createBranch = asyncHandler(async (req, res) => {
-  const { branch } = req.body
+  const { name, address } = req.body
 
   const response = await Branch.create({
-    name: branch,
+    name,
+    address
   })
-  
+
+  return res.json(response)
 })
 
 const getBranch = asyncHandler(async (req, res) => {

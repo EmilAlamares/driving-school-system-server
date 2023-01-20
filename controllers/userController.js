@@ -12,8 +12,16 @@ const asyncHandler = require("express-async-handler")
 
 const searchUser = asyncHandler(async (req, res) => {
 
+  const response = await User.findById(req.params.id)
 
-  res.json({ user })
+  res.json(response)
+})
+
+const getAllUsers = asyncHandler(async (req, res) => {
+  // Secure this in the future.
+
+  const response = await User.find({})
+  res.json(response)
 })
 
 const createUser = asyncHandler(async (req, res) => {
@@ -32,7 +40,8 @@ const createUser = asyncHandler(async (req, res) => {
     contactNo,
     branches,
     package,
-    instructorId
+    instructorId,
+    sessions
   } = req.body
 
   if (!email || !password) {
@@ -65,7 +74,8 @@ const createUser = asyncHandler(async (req, res) => {
     contactNo,
     branches,
     package,
-    instructorId
+    instructorId,
+    sessions,
   })
 
   if (user) {
@@ -98,7 +108,7 @@ const loginUser = asyncHandler(async (req, res) => {
 
   const user = await User.findOne({ email })
 
-  // console.log(user)
+  console.log(user)
 
   if (user && (await bcrypt.compare(password, user.password))) {
     res.json({
@@ -108,7 +118,8 @@ const loginUser = asyncHandler(async (req, res) => {
       token: generateToken(user._id),
       type: user.type,
       firstName: user.firstName,
-      lastName: user.lastName
+      lastName: user.lastName,
+      branches: user.branches
     })
   } else {
     return res.json({ message: "Invalid credentials." })
@@ -121,9 +132,10 @@ const generateToken = (id) => {
 
 module.exports = {
   // getUser,
-  // searchUser,
   // updateUser,
   // deleteUser,
   createUser,
   loginUser,
+  searchUser,
+  getAllUsers
 }

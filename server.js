@@ -2,6 +2,7 @@ const express = require("express")
 const cors = require("cors")
 const userRoutes = require("./routes/userRoutes")
 const branchRoutes = require("./routes/branchRoutes")
+const sessionRoutes = require("./routes/sessionRoutes")
 require("dotenv").config()
 const { connectDatabase } = require("./config/database")
 const app = express()
@@ -18,6 +19,7 @@ app.use(upload())
 
 app.use("/users", userRoutes)
 app.use("/branches", branchRoutes)
+app.use("/sessions", sessionRoutes)
 
 
 const server = require("http").createServer(app)

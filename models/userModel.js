@@ -51,7 +51,7 @@ const userSchema = mongoose.Schema({
   },
   instructorId: {
     type: ObjectId
-  }
+  },
 }, {timestamps: true})
 
 module.exports = mongoose.model('User', userSchema)
