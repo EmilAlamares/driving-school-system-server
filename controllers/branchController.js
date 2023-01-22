@@ -38,7 +38,7 @@ const getBranchUsers = asyncHandler(async (req, res) => {
         },
       },
       { $unwind: { path: "$instructor" } },
-      { $project: { firstName: 1, lastName: 1, package: 1, branches: 1, status: 'In progress', instructor: {fullName: {$concat : ['$instructor.firstName', ' ', '$instructor.lastName']}} } },
+      { $project: { firstName: 1, middleName: 1, gender: 1, address: 1, birthDate: 1, email: 1, contactNo: 1, lastName: 1, branches: 1, instructor: {fullName: {$concat : ['$instructor.firstName', ' ', '$instructor.lastName']}} } },
     ])
 
   if (type == "Instructor")
@@ -53,7 +53,7 @@ const getBranchUsers = asyncHandler(async (req, res) => {
         },
       },
       // { $unwind: { path: "$students" } },
-      { $project: { fullName: {$concat: ['$firstName', ' ', '$lastName']}, branches: 1, status: 'In progress', students: {firstName: 1, lastName: 1}} },
+      { $project: { fullName: {$concat: ['$firstName', ' ', '$lastName']}, firstName: 1, middleName: 1, gender: 1, address: 1, birthDate: 1, email: 1, contactNo: 1, lastName: 1, branches: 1, students: {firstName: 1, lastName: 1}} },
     ])
 
   // console.log(response)
