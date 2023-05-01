@@ -1,4 +1,5 @@
 const User = require("../models/userModel")
+const Session = require("../models/sessionModel")
 const jwt = require("jsonwebtoken")
 const bcrypt = require("bcrypt")
 const asyncHandler = require("express-async-handler")
@@ -11,7 +12,6 @@ const asyncHandler = require("express-async-handler")
 // })
 
 const searchUser = asyncHandler(async (req, res) => {
-
   const response = await User.findById(req.params.id)
 
   res.json(response)
@@ -20,7 +20,7 @@ const searchUser = asyncHandler(async (req, res) => {
 const getAllUsers = asyncHandler(async (req, res) => {
   // Secure this in the future.
 
-  const response = await User.find({})
+  const response = await User.find({ type: "Student" })
   res.json(response)
 })
 
@@ -41,7 +41,7 @@ const createUser = asyncHandler(async (req, res) => {
     branches,
     package,
     instructorId,
-    sessions
+    sessions,
   } = req.body
 
   if (!email || !password) {
@@ -90,9 +90,58 @@ const createUser = asyncHandler(async (req, res) => {
   }
 })
 
-// const updateUser = asyncHandler(async (req, res) => {
-//   res.send("Update user")
-// })
+const updateUser = asyncHandler(async (req, res) => {
+  let { email, userId, selectedBranch, instructor, sessions, type } = req.body
+
+  // console.log({ email, userId, selectedBranch, instructor, sessions, type })
+
+  if (selectedBranch && type == "Student") {
+    await User.findOneAndUpdate({ email }, { branches: selectedBranch })
+  }
+
+  if (selectedBranch && type == "Instructor") {
+    // let branches = await User.find({ _id: userId }, "branches")
+    await User.findOneAndUpdate({ _id: userId }, { branches: selectedBranch })
+  }
+
+  if (instructor && type == "Student")
+    await User.findOneAndUpdate({ email }, { instructorId: instructor._id })
+
+  if (sessions && type == "Student") {
+    await Session.deleteMany({ studentId: userId })
+
+    sessions.forEach(async (session) => {
+      await Session.create({
+        studentId: userId,
+        instructorId: instructor._id,
+        date: session.date,
+        startTime: session.startTime,
+        endTime: session.endTime,
+        branch: selectedBranch,
+      })
+    })
+  }
+
+  if (type == "Student Session") {
+    const student = await User.find({ _id: userId })
+
+    await Session.deleteMany({
+      studentId: userId,
+      instructorId: student[0].instructorId,
+    })
+
+    sessions.forEach(async (session) => {
+      await Session.create({
+        studentId: userId,
+        instructorId: student[0].instructorId,
+        date: session.date,
+        startTime: session.startTime,
+        endTime: session.endTime,
+        branch: selectedBranch,
+      })
+    })
+  }
+})
 
 // const deleteUser = asyncHandler(async (req, res) => {
 //   res.send("Delete")
@@ -119,7 +168,7 @@ const loginUser = asyncHandler(async (req, res) => {
       type: user.type,
       firstName: user.firstName,
       lastName: user.lastName,
-      branches: user.branches
+      branches: user.branches,
     })
   } else {
     return res.json({ message: "Invalid credentials." })
@@ -132,10 +181,10 @@ const generateToken = (id) => {
 
 module.exports = {
   // getUser,
-  // updateUser,
   // deleteUser,
+  updateUser,
   createUser,
   loginUser,
   searchUser,
-  getAllUsers
+  getAllUsers,
 }

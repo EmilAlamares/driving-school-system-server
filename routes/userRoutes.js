@@ -3,7 +3,8 @@ const {
   loginUser,
   createUser,
   searchUser,
-  getAllUsers
+  getAllUsers,
+  updateUser
 } = require("../controllers/userController")
 const router = express.Router()
 
@@ -14,5 +15,7 @@ router.route("/").post(createUser).get(getAllUsers)
 router.route("/:id").get(searchUser)
 
 router.route("/login").post(loginUser)
+
+router.route("/update").put(updateUser)
 
 module.exports = router

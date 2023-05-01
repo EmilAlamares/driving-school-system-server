@@ -24,8 +24,6 @@ const getBranchUsers = asyncHandler(async (req, res) => {
   const { branch, type } = req.params
   let response
 
-  console.log({branch, type})
-
   if (type == "Student")
     response = await User.aggregate([
       { $match: { type: "Student", branches: {$in: [branch]} } },
